@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Test;
+import org.openqa.selenium.JavascriptExecutor;
 
 public class CssSelectors {
 
@@ -15,6 +16,9 @@ public class CssSelectors {
 
 driver.get("https://demoqa.com/");
 driver.manage().window().maximize();
+hideBanner();// от рекламы
+hideFooter(); // от рекламы
+
 
         WebElement imgTools = driver.findElement(By.cssSelector("img[src='/images/Toolsqa.jpg']"));
         System.out.println(imgTools.getTagName());
@@ -36,14 +40,16 @@ driver.manage().window().maximize();
 
     }
     @Test
-    public void selectorsElementsPage(){
+    public void selectorsElementsPage() {
         driver.get("https://demoqa.com/elements");
         driver.manage().window().maximize();
+        hideBanner();// от рекламы
+        hideFooter(); // от рекламы
+
         WebElement textBox = driver.findElement(By.id("item-0"));
         System.out.println(textBox.getAttribute("class"));
         WebElement checkBox = driver.findElement(By.cssSelector("li[id='item-1']"));
         checkBox.click();
-
 
 
         try {
@@ -53,5 +59,34 @@ driver.manage().window().maximize();
         }
         driver.quit();
     }
+
+        @Test
+                public void selectorsRadioButtonPage(){
+            driver.get("https://demoqa.com/radio-button");
+            driver.manage().window().maximize();
+            hideBanner();// от рекламы
+            hideFooter(); // от рекламы
+       // WebElement btnYes = driver.findElement(By.cssSelector("label[for='yesRadio']"));
+            WebElement btnYes = driver.findElement(By.xpath("//label[@for='yesRadio']"));
+        btnYes.click();
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            driver.quit();
+
+        }
+
+    private void hideBanner(){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("document.querySelector('#fixedban').style.display='none'");
+    }
+    private void hideFooter(){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("document.querySelector('footer').style.display='none'");
+    }
+
 
 }

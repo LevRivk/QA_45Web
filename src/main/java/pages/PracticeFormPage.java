@@ -2,12 +2,16 @@ package pages;
 
 import dto.Student;
 import enums.Gender;
+import enums.Hobbies;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+
+import java.util.List;
 
 public class PracticeFormPage extends BasePage {
 
@@ -23,14 +27,12 @@ public class PracticeFormPage extends BasePage {
     WebElement fieldEmail;
     @FindBy(xpath = "//input[@id='userNumber']")
     WebElement fieldMobile;
-    @FindBy(xpath = "//div[@id='subjectsContainer']")
-    WebElement fieldSubject;
-    @FindBy(xpath = "//label[@for='hobbies-checkbox-1']")
-    WebElement checkBoxHobbiesSports;
-    @FindBy(xpath = "//label[@for='hobbies-checkbox-2']")
-    WebElement checkBoxHobbiesReading;
-    @FindBy(xpath = "//label[@for='hobbies-checkbox-3']")
-    WebElement checkBoxHobbiesMusic;
+    @FindBy(xpath = "//input[@id='dateOfBirthInput']")
+    WebElement fieldDateOfBirth;
+
+    @FindBy(xpath = "//input[@id='subjectsInput']")
+    WebElement fieldSubjects;
+
     //textarea[@id='currentAddress']
     @FindBy(xpath = "//textarea[@id='currentAddress']")
     WebElement fieldCurrentAddress;
@@ -39,24 +41,86 @@ public class PracticeFormPage extends BasePage {
     @FindBy(xpath = "//div[text()='Select City']")
     WebElement btnCity;
 
+    @FindBy(xpath = "//input[@id='react-select-3-input']")
+    WebElement inputState;
+    @FindBy(xpath = "//input[@id='react-select-4-input']")
+    WebElement inputCity;
 
+    @FindBy(xpath ="//button[@id='submit']")
+    WebElement btnSubmit;
+
+    @FindBy(xpath ="//div[text()='Thanks for submitting the form']")
+    WebElement modalMessae;
 
 
 
 
     public void typePracticeForm(Student student) {
+        hideBanner();
+        hideFooter();
         fieldName.sendKeys(student.getName());
         fieldlastName.sendKeys(student.getLastName());
         fieldEmail.sendKeys(student.getEmail());
         typeGender(student.getGender());
         fieldMobile.sendKeys(student.getMobile());
+        typeDateOfBirth(student.getDateOfBirth());
+        typeSubjects(student.getSubjects());
+        typeHobbies(student.getHobbies());
         fieldCurrentAddress.sendKeys(student.getAddress());
+        typeStateCity(student.getState(),student.getCity());
+        btnSubmit.click();
 
+    }
+    public boolean validateModalMessage(){
+        return validateTextElement(modalMessae,"Thanks for submitting the form");
+    }
 
+    private void typeStateCity(String state, String city) {
+        inputState.sendKeys(state);
+        inputState.sendKeys(Keys.ENTER);
+        inputCity.sendKeys(city);
+        inputCity.sendKeys(Keys.ENTER);
 
+    }
 
+    private void typeHobbies(List<Hobbies> hobbies) {
+        for(Hobbies h:hobbies){
+            switch (h){
+                case MUSIC:
+                driver.findElement(By.xpath(h.getLocator())).click();
+                break;
+                case  SPORTS:
+                driver.findElement(By.xpath(h.getLocator())).click();
+                break;
+                case READING:
+                    driver.findElement(By.xpath(h.getLocator())).click();
+                    break;
+            }
+        }
 
+    }
 
+    private void typeSubjects(String subjects) {
+        fieldSubjects.click();
+        String[] arr=subjects.split(",");
+        for (String s:arr){
+            fieldSubjects.sendKeys(s);
+            fieldSubjects.sendKeys(Keys.ENTER);
+        }
+      //  fieldSubjects.sendKeys(subjects);
+
+    }
+
+    private void typeDateOfBirth(String dateOfBirth){
+        fieldDateOfBirth.click();
+        String operationSystem = System.getProperty("os.name");
+        System.out.println(operationSystem);
+        if(operationSystem.startsWith("Win"))
+            fieldDateOfBirth.sendKeys(Keys.chord(Keys.CONTROL,"a"));
+        else if (operationSystem.startsWith("Mac"))
+        fieldDateOfBirth.sendKeys(Keys.chord(Keys.COMMAND,"a"));
+       fieldDateOfBirth.sendKeys(dateOfBirth);
+        fieldDateOfBirth.sendKeys(Keys.ENTER);
 
     }
 
